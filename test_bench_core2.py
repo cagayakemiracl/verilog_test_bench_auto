@@ -27,6 +27,11 @@ class Test_bench:
 
     def list2str(self, list):
         return reduce(lambda x, y: x + ", " + y, list)
+
+    def print_type(self, type, line):
+        line = line.strip()
+        print "type is %s '%s'" % (type, line)
+        return line.replace(type, "")
         
     def analysis(self):
         with open(self.dest_file, 'w') as f:
@@ -34,8 +39,7 @@ class Test_bench:
             for line in open(self.sorce_file, 'r'):
                 if "input" in line:
                     bit_num = 0
-                    print "type is input %s" % line,
-                    line = line.replace("input", "").strip()
+                    line = self.print_type("input", line)
                     f.write("\treg  %s\n" % line)
                     attr = self.split(",|;|\s", line)
                     if re.match("^\[", attr[0]):
@@ -52,8 +56,7 @@ class Test_bench:
                     print bit_num
                     print self.bit_sum
                 elif "output" in line:
-                    print "type if output %s" % line,
-                    line = line.replace("output", "").strip()
+                    line = self.print_type("output", line)
                     f.write("\twire %s\n" % line)
                     attr = self.split(",|;|\s", line)
                     if re.match("^\[", attr[0]):
@@ -61,12 +64,12 @@ class Test_bench:
 
                     self.argl += attr
                 elif "module" in line and "endmodule" not in line:
-                    print "type is module %s" % line,
+                    line = self.print_type("module", line)
                     tmp = self.split("\s", line)
-                    self.name = tmp[1]
+                    self.name = tmp[0]
                     print self.name
                 else:
-                    print "bat strings %s" % line,
+                    self.print_type("bat strings", line)
 
         self.args = self.list2str(self.argl)
         self.inputs = self.list2str(self.inputl)
