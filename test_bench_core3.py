@@ -35,7 +35,7 @@ class Test_bench:
             for line in open(self.sorce_file, 'r'):
                 if "input" in line:
                     bit_num = 0
-                    print("type is input %s" % line, end=' ')
+                    print("type is input %s" % line, end='')
                     line = line.replace("input", "").strip()
                     f.write("\treg  %s\n" % line)
                     attr = self.split(",|;|\s", line)
@@ -53,7 +53,7 @@ class Test_bench:
                     print(bit_num)
                     print(self.bit_sum)
                 elif "output" in line:
-                    print("type if output %s" % line, end=' ')
+                    print("type if output %s" % line, end='')
                     line = line.replace("output", "").strip()
                     f.write("\twire %s\n" % line)
                     attr = self.split(",|;|\s", line)
@@ -62,12 +62,12 @@ class Test_bench:
 
                     self.argl += attr
                 elif "module" in line and "endmodule" not in line:
-                    print("type is module %s" % line, end=' ')
+                    print("type is module %s" % line, end='')
                     tmp = self.split("\s", line)
                     self.name = tmp[1]
                     print(self.name)
                 else:
-                    print("bat strings %s" % line, end=' ')
+                    print("bat strings %s" % line, end='')
 
         self.args = self.list2str(self.argl)
         self.inputs = self.list2str(self.inputl)
