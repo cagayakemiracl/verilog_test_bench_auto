@@ -7,7 +7,7 @@ verilogのテストベンチファイルを自動生成して実行までを行�
 
 $ git clone git://github.com/cagayakemiracl/verilog_test_bench_auto
 
-するとverilog_test_bench_autoというファイルにプログラムがダウンロードされます
+するとverilog_test_bench_autoというディレクトリにプログラムがダウンロードされます
 そこのtest_benchプログラムを実行するとテストベンチファイルが出来ます
 
 $ ./verilog_test_bench_auto/test_bench ファイル名
