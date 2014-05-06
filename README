@@ -1,0 +1,24 @@
+これは何？
+verilogのテストベンチファイルを自動生成して実行までを行うスクリプトです
+主に学校の課題をすぐ終わらせるためのものです
+
+使い方
+まずダウンロードします
+
+$ git clone git://github.com/cagayakemiracl/verilog_test_bench_auto
+
+するとverilog_test_bench_autoというファイルにプログラムがダウンロードされます
+そこのtest_benchプログラムを実行するとテストベンチファイルが出来ます
+
+$ ./verilog_test_bench_auto/test_bench ファイル名
+
+ずらずら出力されるのでそれがテストベンチの実行結果です。入力を総当りしています
+test_benchプログラムをpath通したり、リンクを貼ると楽かもしれません
+
+$ sudo ln -sf verilog_test_bench_auto/test_bench /usr/bin/test_bench
+
+必要なもの
+python 3.x
+(python 2.x)
+
+学校のパソコンにはpython 2.7しか入ってないのでpython 2.7向けのコードも入ってます
