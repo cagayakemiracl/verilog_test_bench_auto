@@ -92,7 +92,10 @@ module test_bench();
     def output_file(self):
         with open(self.dest_file, 'a') as f:
             if self.clk:
-                f.write("always #5 clk <= !clk;\ninitial clk = 0;\n")
+                f.write("""
+\talways #5 clk <= !clk;
+\tinitial clk = 0;
+""")
                 
             f.write('''
 \t%s i0 (%s);
