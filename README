@@ -9,6 +9,7 @@ $ git clone git://github.com/cagayakemiracl/verilog_test_bench_auto
 
 するとverilog_test_bench_autoというディレクトリにプログラムがダウンロードされます
 そこのtest_benchプログラムを実行するとテストベンチファイルが出来ます
+ファイル名と同じモジュールのテストベンチが生成されます
 
 $ ./verilog_test_bench_auto/test_bench ファイル名
 
