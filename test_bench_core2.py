@@ -14,6 +14,7 @@ class Test_bench:
         self.inputl = []
         self.analysis()
         self.output_file()
+        self.clk = False
 
     def split(self, match, string):
         tmp = re.split(match, string)
@@ -56,8 +57,12 @@ module test_bench();
                     else:
                         bit_num = 2
 
-                    self.bit_sum *= bit_num ** len(attr)
                     self.argl += attr
+                    if "clk" in attr:
+                        self.clk = True
+                        attr.pop(attr.index("clk"))
+                                            
+                    self.bit_sum *= bit_num ** len(attr)
                     self.inputl += attr 
                     print attr
                     print bit_num
@@ -85,6 +90,9 @@ module test_bench();
 
     def output_file(self):
         with open(self.dest_file, 'a') as f:
+            if self.clk:
+                f.write("always #5 clk <= !clk;\ninitial clk = 0;\n")
+                
             f.write('''
 \t%s i0 (%s);
 
