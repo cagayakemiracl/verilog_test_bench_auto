@@ -13,9 +13,10 @@ class Test_bench:
         self.bit_sum = 1
         self.argl = []
         self.inputl = []
+        self.clk = False
+        
         self.analysis()
         self.output_file()
-        self.clk = False
 
     def split(self, match, string):
         tmp = re.split(match, string)
