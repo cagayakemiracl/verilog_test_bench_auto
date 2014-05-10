@@ -32,7 +32,7 @@ def print_type(line):
     print("type is %s '%s'" % (type, line))
     return line.replace(type, "").strip()
 
-def add_str(list):
+def add_list(list):
     return reduce(lambda x, y: x + y, list);
 
 def port2obj(line):
@@ -85,7 +85,7 @@ class Test_bench:
                         attr.pop(attr.index("clk"))
 
                     self.bit_sum *= bit_num ** len(attr)
-                    self.inputl += attr
+                    self.inputl.append([bit_num, attr])
                     print(attr)
                     print(bit_num)
                     print(self.bit_sum)
@@ -109,6 +109,10 @@ class Test_bench:
                 else:
                     print_type(line)
 
+        self.inputl.sort()
+        self.inputl.reverse()
+        self.inputl = add_list([x.pop(1) for x in self.inputl])
+        print(self.inputl)
         self.args = list2str(self.argl)
         self.inputs = list2str(self.inputl)
         print(self.args)
@@ -137,14 +141,14 @@ module test_bench ();
 \t\t$finish;
 \tend // initial begin
 endmodule // test_bench
-''' % (add_str(["\t%s\n" % x for x in self.objl]),
+''' % (add_list(["\t%s\n" % x for x in self.objl]),
        self.clk,
        self.base,
        list2str([".%s(%s)" % (x, x) for x in self.argl]),
        self.dump_file,
-       add_str([" %s = %%b" % x for x in self.argl]),
+       add_list([" %s = %%b" % x for x in self.argl]),
        self.args,
-       add_str(["\t\t%s = 0;\n" % x for x in self.inputl]),
+       add_list(["\t\t%s = 0;\n" % x for x in self.inputl]),
        self.bit_sum,
        self.inputs,
        self.inputs,
