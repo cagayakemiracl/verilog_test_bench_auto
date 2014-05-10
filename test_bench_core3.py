@@ -26,10 +26,9 @@ def get_type(line):
 
     return ret
 
-def print_type(line):
+def rm_type(line):
     line = line.strip()
     type = get_type(line)
-    print("type is %s '%s'" % (type, line))
     return line.replace(type, "").strip()
 
 def add_list(list):
@@ -79,28 +78,19 @@ class Test_bench:
                     attr, bit_num = self.spl_val(line)
                     self.bit_sum *= bit_num ** len(attr)
                     self.inputl.append([bit_num, attr])
-                    print(attr)
-                    print(bit_num)
-                    print(self.bit_sum)
                 elif "output" in line and target:
                     attr, bit_num = self.spl_val(line)
                     self.outputl.append([bit_num, attr])
                 elif "endmodule" in line and target:
-                    print_type(line)
                     break
                 elif "module" in line:
-                    line = print_type(line)
+                    line = rm_type(line)
                     tmp = my_split("\s", line)
                     name = tmp[0]
-                    print(name)
                     if self.base == name:
                         target = True
 
-                else:
-                    print_type(line)
-
         self.inputl = sort_bit(self.inputl)
-        print(self.inputl)
         self.outputl = sort_bit(self.outputl)
         self.argl = self.outputl + self.inputl
         self.args = list2str(self.argl)
@@ -109,8 +99,6 @@ class Test_bench:
             self.inputl.pop(self.inputl.index("clk"))
 
         self.inputs = list2str(self.inputl)
-        print(self.args)
-        print(self.inputs)
 
     def output_file(self):
         with open(self.dest_file, 'w') as f:
@@ -158,7 +146,7 @@ endmodule // test_bench
 
     def spl_val(self, line):
         self.objl.append(port2obj(line))
-        tmp = print_type(line)
+        tmp = rm_type(line)
         attr = my_split(",|;|\s", tmp)
         if re.match("^\[", attr[0]):
             bit_list = list(map(int, my_split("\[|:|\]", attr[0])))
