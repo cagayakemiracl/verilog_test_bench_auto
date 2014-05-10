@@ -3,7 +3,7 @@ import os
 import re
 import math
 from functools import reduce
-            
+
 class Test_bench:
     def __init__(self, file_name):
         self.sorce_file = file_name;
@@ -14,7 +14,7 @@ class Test_bench:
         self.argl = []
         self.inputl = []
         self.clk = False
-        
+
         self.analysis()
         self.output_file()
 
@@ -35,7 +35,7 @@ class Test_bench:
         line = line.strip()
         print("type is %s '%s'" % (type, line))
         return line.replace(type, "")
-        
+
     def analysis(self):
         target = False
         with open(self.dest_file, 'w') as f:
@@ -44,8 +44,7 @@ class Test_bench:
 \thttps://github.com/cagayakemiracl/verilog_test_bench_auto
 \tThank you!!
 */
-            
-module test_bench();
+module test_bench ();
 """)
             with open(self.sorce_file, 'r') as f2:
                 for line in f2:
@@ -53,7 +52,7 @@ module test_bench();
                         bit_num = 0
                         line = self.print_type("input", line)
                         if target:
-                            f.write("\treg  %s\n" % line)
+                            f.write("\treg %s\n" % line)
                             attr = self.split(",|;|\s", line)
                             if re.match("^\[", attr[0]):
                                 bit_list = list(map(int, self.split("\[|:|\]", attr[0])))
@@ -66,9 +65,9 @@ module test_bench();
                             if "clk" in attr:
                                 self.clk = True
                                 attr.pop(attr.index("clk"))
-                                
+
                             self.bit_sum *= bit_num ** len(attr)
-                            self.inputl += attr 
+                            self.inputl += attr
                             print(attr)
                             print(bit_num)
                             print(self.bit_sum)
@@ -82,12 +81,12 @@ module test_bench();
                                 attr.pop(0)
 
                             self.argl += attr
-                            
+
                     elif "endmodule" in line:
                         self.print_type("endmodule", line)
                         if target:
                             break
-                            
+
                     elif "module" in line:
                         line = self.print_type("module", line)
                         tmp = self.split("\s", line)
@@ -95,15 +94,15 @@ module test_bench();
                         print(name)
                         if self.base == name:
                             target = True
-                            
+
                     else:
                         self.print_type("bat strings", line)
-                        
+
         self.args = self.list2str(self.argl)
         self.inputs = self.list2str(self.inputl)
         print(self.args)
         print(self.inputs)
-            
+
     def output_file(self):
         with open(self.dest_file, 'a') as f:
             if self.clk:
@@ -111,14 +110,14 @@ module test_bench();
 \talways #5 clk <= !clk;
 \tinitial clk = 0;
 """)
-                
+
             f.write('''
 \t%s i0 (%s);
 
 \tinitial begin
-\t\t$dumpfile("%s");
-\t\t$dumpvars(0, test_bench);
-\t\t$monitor("%%t''' % (self.base, self.args, self.dump_file))
+\t\t$dumpfile ("%s");
+\t\t$dumpvars (0, test_bench);
+\t\t$monitor  ("%%t''' % (self.base, self.args, self.dump_file))
             for attr in self.argl:
                 f.write(" %s = %%b" % attr)
 
@@ -144,7 +143,7 @@ endmodule // test_bench
 
     def rm_aout(self):
         os.system("rm a.out")
-        
+
     def run(self):
         self.compile_file()
         self.exec_file()
