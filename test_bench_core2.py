@@ -84,7 +84,7 @@ class Test_bench:
                     break
                 elif "module" in line:
                     line = rm_type(line)
-                    tmp = my_split("\s", line)
+                    tmp = my_split("\s|\(", line)
                     name = tmp[0]
                     if self.base == name:
                         target = True
