@@ -44,6 +44,11 @@ def port2obj(line):
     port_rm = line.replace(port, "").strip()
     return dic.get(port, "") + port_rm
 
+def sort_bit(list):
+    list.sort()
+    list.reverse()
+    return add_list([x.pop(1) for x in list])
+
 def exec_file():
     os.system("vvp a.out")
 
@@ -59,6 +64,7 @@ class Test_bench:
         self.bit_sum = 1
         self.argl = []
         self.inputl = []
+        self.outputl = []
         self.objl = []
         self.clk = ""
 
@@ -70,31 +76,15 @@ class Test_bench:
         with open(self.sorce_file, 'r') as f:
             for line in f:
                 if "input" in line and target:
-                    bit_num = 0
-                    attr = self.spl_val(line)
-                    if re.match("^\[", attr[0]):
-                        bit_list = list(map(int, my_split("\[|:|\]", attr[0])))
-                        bit_num = 2 ** (int(math.fabs(bit_list[0] - bit_list[1])) + 1)
-                        attr.pop(0)
-                    else:
-                        bit_num = 2
-
-                    self.argl += attr
-                    if "clk" in attr:
-                        self.clk = "\n\talways #5 clk <= !clk;\n\tinitial clk = 0;\n"
-                        attr.pop(attr.index("clk"))
-
+                    attr, bit_num = self.spl_val(line)
                     self.bit_sum *= bit_num ** len(attr)
                     self.inputl.append([bit_num, attr])
                     print(attr)
                     print(bit_num)
                     print(self.bit_sum)
                 elif "output" in line and target:
-                    attr = self.spl_val(line)
-                    if re.match("^\[", attr[0]):
-                        attr.pop(0)
-
-                    self.argl += attr
+                    attr, bit_num = self.spl_val(line)
+                    self.outputl.append([bit_num, attr])
                 elif "endmodule" in line and target:
                     print_type(line)
                     break
@@ -109,11 +99,15 @@ class Test_bench:
                 else:
                     print_type(line)
 
-        self.inputl.sort()
-        self.inputl.reverse()
-        self.inputl = add_list([x.pop(1) for x in self.inputl])
+        self.inputl = sort_bit(self.inputl)
         print(self.inputl)
+        self.outputl = sort_bit(self.outputl)
+        self.argl = self.outputl + self.inputl
         self.args = list2str(self.argl)
+        if "clk" in self.inputl:
+            self.clk = "\n\talways #5 clk <= !clk;\n\tinitial clk = 0;\n"
+            self.inputl.pop(self.inputl.index("clk"))
+
         self.inputs = list2str(self.inputl)
         print(self.args)
         print(self.inputs)
@@ -165,4 +159,12 @@ endmodule // test_bench
     def spl_val(self, line):
         self.objl.append(port2obj(line))
         tmp = print_type(line)
-        return my_split(",|;|\s", tmp)
+        attr = my_split(",|;|\s", tmp)
+        if re.match("^\[", attr[0]):
+            bit_list = list(map(int, my_split("\[|:|\]", attr[0])))
+            bit_num = 2 ** (int(math.fabs(bit_list[0] - bit_list[1])) + 1)
+            attr.pop(0)
+        else:
+            bit_num = 2
+
+        return attr, bit_num
