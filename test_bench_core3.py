@@ -34,7 +34,7 @@ class Test_bench:
     def print_type(self, type, line):
         line = line.strip()
         print("type is %s '%s'" % (type, line))
-        return line.replace(type, "")
+        return line.replace(type, "").strip()
 
     def analysis(self):
         target = False
@@ -52,7 +52,7 @@ module test_bench ();
                         bit_num = 0
                         line = self.print_type("input", line)
                         if target:
-                            f.write("\treg %s\n" % line)
+                            f.write("\treg  %s\n" % line)
                             attr = self.split(",|;|\s", line)
                             if re.match("^\[", attr[0]):
                                 bit_list = list(map(int, self.split("\[|:|\]", attr[0])))
