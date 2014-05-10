@@ -47,45 +47,39 @@ module test_bench ();
 """)
             with open(self.sorce_file, 'r') as f2:
                 for line in f2:
-                    if "input" in line:
+                    if "input" in line and target:
                         bit_num = 0
                         line = self.print_type("input", line)
-                        if target:
-                            f.write("\treg  %s\n" % line)
-                            attr = self.split(",|;|\s", line)
-                            if re.match("^\[", attr[0]):
-                                bit_list = map(int, self.split("\[|:|\]", attr[0]))
-                                bit_num = 2 ** (int(math.fabs(bit_list[0] - bit_list[1])) + 1)
-                                attr.pop(0)
-                            else:
-                                bit_num = 2
+                        f.write("\treg  %s\n" % line)
+                        attr = self.split(",|;|\s", line)
+                        if re.match("^\[", attr[0]):
+                            bit_list = map(int, self.split("\[|:|\]", attr[0]))
+                            bit_num = 2 ** (int(math.fabs(bit_list[0] - bit_list[1])) + 1)
+                            attr.pop(0)
+                        else:
+                            bit_num = 2
 
-                            self.argl += attr
-                            if "clk" in attr:
-                                self.clk = True
-                                attr.pop(attr.index("clk"))
+                        self.argl += attr
+                        if "clk" in attr:
+                            self.clk = True
+                            attr.pop(attr.index("clk"))
 
-                            self.bit_sum *= bit_num ** len(attr)
-                            self.inputl += attr
-                            print attr
-                            print bit_num
-                            print self.bit_sum
-
-                    elif "output" in line:
+                        self.bit_sum *= bit_num ** len(attr)
+                        self.inputl += attr
+                        print attr
+                        print bit_num
+                        print self.bit_sum
+                    elif "output" in line and target:
                         line = self.print_type("output", line)
-                        if target:
-                            f.write("\twire %s\n" % line)
-                            attr = self.split(",|;|\s", line)
-                            if re.match("^\[", attr[0]):
-                                attr.pop(0)
+                        f.write("\twire %s\n" % line)
+                        attr = self.split(",|;|\s", line)
+                        if re.match("^\[", attr[0]):
+                            attr.pop(0)
 
-                            self.argl += attr
-
-                    elif "endmodule" in line:
+                        self.argl += attr
+                    elif "endmodule" in line and target:
                         self.print_type("endmodule", line)
-                        if target:
-                            break
-
+                        break
                     elif "module" in line:
                         line = self.print_type("module", line)
                         tmp = self.split("\s", line)
