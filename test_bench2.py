@@ -2,4 +2,5 @@
 from test_bench_core2 import Test_bench
 from sys import argv
 
-Test_bench(argv[1]).run()
+argv.pop(0)
+Test_bench(argv).run()

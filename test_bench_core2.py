@@ -54,8 +54,9 @@ def rm_aout():
     os.system("rm a.out")
 
 class Test_bench:
-    def __init__(self, file_name):
-        self.sorce_file = file_name;
+    def __init__(self, file_list):
+        self.file_list = file_list
+        self.sorce_file = file_list[0];
         self.base, ext = os.path.splitext(self.sorce_file)
         self.dest_file = self.base + "_test.v"
         self.dump_file = self.base + ".vcd"
@@ -136,7 +137,7 @@ endmodule // test_bench
        self.bit_sum))
 
     def compile_file(self):
-        os.system("iverilog %s %s" % (self.sorce_file, self.dest_file))
+        os.system("iverilog %s%s" % (self.dest_file, add_list(map(lambda x: " %s" % x, self.file_list))))
 
     def run(self):
         self.compile_file()
