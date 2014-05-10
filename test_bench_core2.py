@@ -43,6 +43,12 @@ def port2obj(line):
     port_rm = line.replace(port, "").strip()
     return dic.get(port, "") + port_rm
 
+def exec_file():
+    os.system("vvp a.out")
+
+def rm_aout():
+    os.system("rm a.out")
+
 class Test_bench:
     def __init__(self, file_name):
         self.sorce_file = file_name;
@@ -148,21 +154,12 @@ endmodule // test_bench
     def compile_file(self):
         os.system("iverilog %s %s" % (self.sorce_file, self.dest_file))
 
-    def exec_file(self):
-        os.system("vvp a.out")
-
-    def rm_aout(self):
-        os.system("rm a.out")
-
     def run(self):
         self.compile_file()
-        self.exec_file()
-        self.rm_aout()
-
-    def obj_append(self, line):
-        self.objl.append(port2obj(line))
+        exec_file()
+        rm_aout()
 
     def spl_val(self, line):
-        self.obj_append(line)
+        self.objl.append(port2obj(line))
         tmp = print_type(line)
         return my_split(",|;|\s", tmp)
