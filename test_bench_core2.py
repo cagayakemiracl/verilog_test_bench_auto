@@ -35,6 +35,9 @@ class Test_bench:
         print "type is %s '%s'" % (type, line)
         return line.replace(type, "").strip()
 
+    def add_str(self, list):
+        return reduce(lambda x, y: x + y, list);
+
     def analysis(self):
         target = False
         with open(self.dest_file, 'w') as f:
@@ -99,26 +102,16 @@ module test_bench ();
     def output_file(self):
         with open(self.dest_file, 'a') as f:
             if self.clk:
-                f.write("""
-\talways #5 clk <= !clk;
-\tinitial clk = 0;
-""")
-
+                f.write("\talways #5 clk <= !clk;\n\tinitial clk = 0;")
+                
             f.write('''
 \t%s i0 (%s);
 
 \tinitial begin
 \t\t$dumpfile ("%s");
 \t\t$dumpvars (0, test_bench);
-\t\t$monitor  ("%%t''' % (self.base, self.args, self.dump_file))
-            for attr in self.argl:
-                f.write(" %s = %%b" % attr)
-
-            f.write('", $time, %s);\n' % self.args)
-            for attr in self.inputl:
-                f.write("\t\t%s = 0;\n" % attr)
-
-            f.write("""
+\t\t$monitor  ("%%t%s", $time, %s);
+%s
 \t\trepeat (%d) begin
 \t\t\t#10;
 \t\t\t{%s} = {%s} + 1;
@@ -126,7 +119,16 @@ module test_bench ();
 \t\t$finish;
 \tend // initial begin
 endmodule // test_bench
-""" % (self.bit_sum, self.inputs, self.inputs, self.bit_sum))
+''' % (self.base,
+       self.list2str(map(lambda x: ".%s(%s)" % (x, x), self.argl)),
+       self.dump_file,
+       self.add_str(map(lambda x: " %s = %%b" % x, self.argl)),
+       self.args,
+       self.add_str(map(lambda x: "\t\t%s = 0;\n" % x, self.inputl)),
+       self.bit_sum,
+       self.inputs,
+       self.inputs,
+       self.bit_sum))
 
     def compile_file(self):
         os.system("iverilog %s %s" % (self.sorce_file, self.dest_file))
