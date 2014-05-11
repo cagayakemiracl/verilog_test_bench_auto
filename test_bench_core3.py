@@ -76,17 +76,18 @@ class Test_bench:
 
         if topmodule:
             self.module = topmodule
-            for file in file_list:
-                with open(file, 'r') as f:
-                    for line in f:
-                        if is_eq_module(line, self.module):
-                            self.source_file = file
-                            break
+            if not input:
+                for file in file_list:
+                    with open(file, 'r') as f:
+                        for line in f:
+                            if is_eq_module(line, self.module):
+                                self.source_file = file
+                                break
 
-                    else:
-                        continue
+                        else:
+                            continue
 
-                    break
+                        break
 
         else:
             basename = os.path.basename(self.source_file)
@@ -110,8 +111,6 @@ class Test_bench:
             self.dest_file = base + "_test.v"
             self.dump_file = base + ".vcd"
 
-        print(self.source_file)
-        print(self.module)
         self.bit_sum = 1
         self.argl = []
         self.inputl = []

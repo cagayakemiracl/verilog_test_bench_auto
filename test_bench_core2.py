@@ -110,8 +110,6 @@ class Test_bench:
             self.dest_file = base + "_test.v"
             self.dump_file = base + ".vcd"
 
-        print self.source_file
-        print self.module
         self.bit_sum = 1
         self.argl = []
         self.inputl = []
