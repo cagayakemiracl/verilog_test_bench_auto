@@ -96,6 +96,9 @@ class Test_bench:
             self.module = topmodule
             if not input:
                 for file in file_list:
+                    if not os.path.exists(file):
+                        print_error("入力ファイルが存在しません! %s" % file)
+                        
                     with open(file, 'r') as f:
                         for line in f:
                             if is_eq_module(line, self.module):
@@ -129,6 +132,10 @@ class Test_bench:
             base += '_test'
             self.dest_file = base + ".v"
             self.dump_file = base + ".vcd"
+
+        for file in self.file_list:
+            if os.path.exists(self.dest_file) and filecmp.cmp(file, self.dest_file):
+                print_error("入力ファイルと出力ファイルが同じです! %s" % file)
 
         self.iverilog = os.path.join(path, "iverilog")
         self.vvp = os.path.join(path, "vvp")
