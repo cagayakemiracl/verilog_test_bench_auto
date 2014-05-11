@@ -57,8 +57,12 @@ def is_eq_module(line, name):
 
     return False
 
+def my_remove(file):
+    if os.path.exists(file):
+        os.remove(file)
+
 def rm_aout():
-    os.remove("a.out")
+    my_remove("a.out")
 
 class Test_bench:
     def __init__(self, file_list, input, output, topmodule, path):
@@ -189,20 +193,26 @@ endmodule // test_bench
                                              add_list(map(lambda x: " %s" % x, self.file_list))))
 
     def exec_file(self):
+        if not os.path.exists("a.out"):
+            self.compile_file()
+
         os.system("%s a.out" % self.vvp)
 
     def show_wave(self):
+        if not os.path.exists(self.dump_file):
+            self.exec_file()
+
         os.system("%s %s" % (self.gtk_wave, self.dump_file))
+        rm_aout()
+
+    def run(self):
+        self.exec_file()
+        rm_aout()
 
     def clean(self):
         rm_aout()
-        os.remove(self.dest_file)
-        os.remove(self.dump_file)
-
-    def run(self):
-        self.compile_file()
-        self.exec_file()
-        rm_aout()
+        my_remove(self.dest_file)
+        my_remove(self.dump_file)
 
     def spl_val(self, line):
         self.objl.append(port2obj(line))
