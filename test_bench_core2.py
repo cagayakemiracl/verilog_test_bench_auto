@@ -3,6 +3,7 @@ import os
 import re
 import math
 import filecmp
+import sys
 
 def my_split(match, string):
     tmp = re.split(match, string)
@@ -64,15 +65,32 @@ def my_remove(file):
 def rm_aout():
     my_remove("a.out")
 
+def print_error(string):
+    print string
+    sys.exit(1)
+
+def check_veri(string):
+    base, ext = os.path.splitext(string)
+    if ext != '.v':
+        print_error("指定したファイルがverilogファイルではありません! %s" % string)
+
+    return string
+
 class Test_bench:
     def __init__(self, file_list, input, output, topmodule, path):
+        for file in file_list:
+            check_veri(file)
+
         self.file_list = file_list
         if input:
-            self.source_file = input
+            self.source_file = check_veri(input)
             if input not in file_list:
                 self.file_list.append(input)
         else:
-            self.source_file = file_list[0]
+            try:
+                self.source_file = file_list[0]
+            except IndexError:
+                print_error("入力ファイルを渡してください!")
 
         if topmodule:
             self.module = topmodule
@@ -96,7 +114,7 @@ class Test_bench:
         if output:
             base, ext = os.path.splitext(output)
             if ext:
-                self.dest_file = output
+                self.dest_file = check_veri(output)
                 self.dump_file = base + '.vcd'
             else:
                 if not os.path.isdir(output):
@@ -140,6 +158,15 @@ class Test_bench:
 
                 if not target:
                     target = is_eq_module(line, self.module)
+
+        if not target:
+            print_error("指定したモジュールが見つかりませんでした! %s" % self.module)
+
+        if not len(self.inputl):
+            print_error("入力ポートが見当たりません!")
+
+        if not len(self.outputl):
+            print_error("出力ポートが見当たりません!")
 
         self.inputl = sort_bit(self.inputl)
         self.outputl = sort_bit(self.outputl)
