@@ -184,7 +184,9 @@ endmodule // test_bench
        self.bit_sum))
 
     def compile_file(self):
-        os.system("%s -s test_bench %s%s" % (self.iverilog, self.dest_file, add_list(map(lambda x: " %s" % x, self.file_list))))
+        os.system("%s -s test_bench %s%s" % (self.iverilog,
+                                             self.dest_file,
+                                             add_list(map(lambda x: " %s" % x, self.file_list))))
 
     def exec_file(self):
         os.system("%s a.out" % self.vvp)
