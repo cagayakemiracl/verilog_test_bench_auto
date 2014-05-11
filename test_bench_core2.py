@@ -57,14 +57,11 @@ def is_eq_module(line, name):
 
     return False
 
-def exec_file():
-    os.system("vvp a.out")
-
 def rm_aout():
-    os.system("rm a.out")
+    os.remove("a.out")
 
 class Test_bench:
-    def __init__(self, file_list, input, output, topmodule):
+    def __init__(self, file_list, input, output, topmodule, path):
         self.file_list = file_list
         if input:
             self.source_file = input
@@ -110,6 +107,8 @@ class Test_bench:
             self.dest_file = base + "_test.v"
             self.dump_file = base + ".vcd"
 
+        self.iverilog = os.path.join(path, "iverilog")
+        self.vvp = os.path.join(path, "vvp")
         self.bit_sum = 1
         self.argl = []
         self.inputl = []
@@ -184,11 +183,14 @@ endmodule // test_bench
        self.bit_sum))
 
     def compile_file(self):
-        os.system("iverilog -s test_bench %s%s" % (self.dest_file, add_list(map(lambda x: " %s" % x, self.file_list))))
+        os.system("%s -s test_bench %s%s" % (self.iverilog, self.dest_file, add_list(map(lambda x: " %s" % x, self.file_list))))
+
+    def exec_file(self):
+        os.system("%s a.out" % self.vvp)
 
     def run(self):
         self.compile_file()
-        exec_file()
+        self.exec_file()
         rm_aout()
 
     def spl_val(self, line):
