@@ -76,8 +76,24 @@ def check_veri(string):
 
     return string
 
+def not_found_module(module):
+    print_error ("指定したモジュールが見つかりませんでした! %s" % module)
+
+def found_module(module, file_list):
+    for file in file_list:
+        if not os.path.exists(file):
+            print_error("ファイルが存在しません! %s" % file)
+
+        check_veri(file)
+        with open(file, 'r') as f:
+            for line in f:
+                if is_eq_module(line, module):
+                    return file
+
+    not_found_module(module)
+
 class Test_bench:
-    def __init__(self, file_list, input, output, topmodule, path):
+    def __init__(self, file_list=[], input='', output='', topmodule='', path=''):
         for file in file_list:
             check_veri(file)
 
@@ -95,20 +111,7 @@ class Test_bench:
         if topmodule:
             self.module = topmodule
             if not input:
-                for file in file_list:
-                    if not os.path.exists(file):
-                        print_error("入力ファイルが存在しません! %s" % file)
-                        
-                    with open(file, 'r') as f:
-                        for line in f:
-                            if is_eq_module(line, self.module):
-                                self.source_file = file
-                                break
-
-                        else:
-                            continue
-
-                        break
+                self.source_file = found_module(self.module, file_list)
 
         else:
             basename = os.path.basename(self.source_file)
@@ -162,12 +165,11 @@ class Test_bench:
                     self.outputl.append([bit_num, attr])
                 elif "endmodule" in line and target:
                     break
-
-                if not target:
+                elif not target:
                     target = is_eq_module(line, self.module)
 
         if not target:
-            print_error("指定したモジュールが見つかりませんでした! %s" % self.module)
+            not_found_module(self.module)
 
         if not len(self.inputl):
             print_error("入力ポートが見当たりません!")
