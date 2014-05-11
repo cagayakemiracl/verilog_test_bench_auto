@@ -116,7 +116,6 @@ class Test_bench:
         self.outputl = []
         self.objl = []
         self.clk = ""
-
         self.analysis()
         self.output_file()
 
