@@ -55,12 +55,35 @@ def rm_aout():
     os.system("rm a.out")
 
 class Test_bench:
-    def __init__(self, file_list):
+    def __init__(self, file_list, input, output, topmodule):
         self.file_list = file_list
-        self.sorce_file = file_list[0];
-        self.base, ext = os.path.splitext(self.sorce_file)
-        self.dest_file = self.base + "_test.v"
-        self.dump_file = self.base + ".vcd"
+        if input:
+            self.source_file = input
+            self.file_list.append(input)
+        else:
+            self.source_file = file_list[0]
+
+        if topmodule:
+            self.module = topmodule
+        else:
+            basename = os.path.basename(self.source_file)
+            self.module, ext = os.path.splitext(basename)
+
+        if output:
+            base, ext = os.path.splitext(output)
+            if ext:
+                self.dest_file = output
+                self.dump_file = base + '.vcd'
+            else:
+                join = os.path.join(output, self.module)
+                self.dest_file = join + '.v'
+                self.dump_file = join + '.vcd'
+
+        else:
+            self.base, ext = os.path.splitext(self.source_file)
+            self.dest_file = self.base + "_test.v"
+            self.dump_file = self.base + ".vcd"
+
         self.bit_sum = 1
         self.argl = []
         self.inputl = []
@@ -73,7 +96,7 @@ class Test_bench:
 
     def analysis(self):
         target = False
-        with open(self.sorce_file, 'r') as f:
+        with open(self.source_file, 'r') as f:
             for line in f:
                 if "input" in line and target:
                     attr, bit_num = self.spl_val(line)
@@ -88,7 +111,7 @@ class Test_bench:
                     line = rm_type(line)
                     tmp = my_split("\s|\(", line)
                     name = tmp[0]
-                    if self.base == name:
+                    if self.module == name:
                         target = True
 
         self.inputl = sort_bit(self.inputl)
@@ -126,7 +149,7 @@ module test_bench ();
 endmodule // test_bench
 ''' % (add_list(["\t%s\n" % x for x in self.objl]),
        self.clk,
-       self.base,
+       self.module,
        list2str([".%s(%s)" % (x, x) for x in self.argl]),
        self.dump_file,
        add_list([" %s = %%b" % x for x in self.argl]),
@@ -138,7 +161,7 @@ endmodule // test_bench
        self.bit_sum))
 
     def compile_file(self):
-        os.system("iverilog %s%s" % (self.dest_file, add_list([" %s" % x for x in self.file_list])))
+        os.system("iverilog -s test_bench %s%s" % (self.dest_file, add_list([" %s" % x for x in self.file_list])))
 
     def run(self):
         self.compile_file()

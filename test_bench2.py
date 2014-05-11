@@ -14,4 +14,4 @@ parser.add_argument('-o', '--output', nargs='?', default='', help='テストベ�
 parser.add_argument('-v', '--version', action='version', version='test_bench 0.1')
 args = parser.parse_args()
 
-Test_bench(args.file_list).run()
+Test_bench(args.file_list, args.input, args.output, args.topmodule).run()
