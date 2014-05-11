@@ -99,13 +99,14 @@ class Test_bench:
                 if not os.path.isdir(output):
                     os.makedirs(output)
 
-                join = os.path.join(output, self.module)
+                join = os.path.join(output, self.module + "_test")
                 self.dest_file = join + '.v'
                 self.dump_file = join + '.vcd'
 
         else:
             base, ext = os.path.splitext(self.source_file)
-            self.dest_file = base + "_test.v"
+            base += '_test'
+            self.dest_file = base + ".v"
             self.dump_file = base + ".vcd"
 
         self.iverilog = os.path.join(path, "iverilog")
