@@ -110,6 +110,7 @@ class Test_bench:
 
         self.iverilog = os.path.join(path, "iverilog")
         self.vvp = os.path.join(path, "vvp")
+        self.gtk_wave = os.path.join(path, "gtkwave")
         self.bit_sum = 1
         self.argl = []
         self.inputl = []
@@ -188,6 +189,14 @@ endmodule // test_bench
 
     def exec_file(self):
         os.system("%s a.out" % self.vvp)
+
+    def show_wave(self):
+        os.system("%s %s" % (self.gtk_wave, self.dump_file))
+
+    def clean(self):
+        rm_aout()
+        os.remove(self.dest_file)
+        os.remove(self.dump_file)
 
     def run(self):
         self.compile_file()
