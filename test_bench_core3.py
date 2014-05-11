@@ -2,6 +2,7 @@ import os.path
 import os
 import re
 import math
+import filecmp
 from functools import reduce
 
 def my_split(match, string):
@@ -48,6 +49,15 @@ def sort_bit(list):
     list.reverse()
     return add_list([x.pop(1) for x in list])
 
+def is_eq_module(line, name):
+    if "module" in line:
+        line = rm_type(line)
+        tmp = my_split("\s|\(", line)
+        if tmp[0] == name:
+            return True
+
+    return False
+
 def exec_file():
     os.system("vvp a.out")
 
@@ -59,12 +69,25 @@ class Test_bench:
         self.file_list = file_list
         if input:
             self.source_file = input
-            self.file_list.append(input)
+            if input not in file_list:
+                self.file_list.append(input)
         else:
             self.source_file = file_list[0]
 
         if topmodule:
             self.module = topmodule
+            for file in file_list:
+                with open(file, 'r') as f:
+                    for line in f:
+                        if is_eq_module(line, self.module):
+                            self.source_file = file
+                            break
+
+                    else:
+                        continue
+
+                    break
+
         else:
             basename = os.path.basename(self.source_file)
             self.module, ext = os.path.splitext(basename)
@@ -75,15 +98,20 @@ class Test_bench:
                 self.dest_file = output
                 self.dump_file = base + '.vcd'
             else:
+                if not os.path.isdir(output):
+                    os.makedirs(output)
+
                 join = os.path.join(output, self.module)
                 self.dest_file = join + '.v'
                 self.dump_file = join + '.vcd'
 
         else:
-            self.base, ext = os.path.splitext(self.source_file)
-            self.dest_file = self.base + "_test.v"
-            self.dump_file = self.base + ".vcd"
+            base, ext = os.path.splitext(self.source_file)
+            self.dest_file = base + "_test.v"
+            self.dump_file = base + ".vcd"
 
+        print(self.source_file)
+        print(self.module)
         self.bit_sum = 1
         self.argl = []
         self.inputl = []
@@ -107,12 +135,9 @@ class Test_bench:
                     self.outputl.append([bit_num, attr])
                 elif "endmodule" in line and target:
                     break
-                elif "module" in line:
-                    line = rm_type(line)
-                    tmp = my_split("\s|\(", line)
-                    name = tmp[0]
-                    if self.module == name:
-                        target = True
+
+                if not target:
+                    target = is_eq_module(line, self.module)
 
         self.inputl = sort_bit(self.inputl)
         self.outputl = sort_bit(self.outputl)
