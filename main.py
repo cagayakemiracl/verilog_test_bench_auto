@@ -17,7 +17,7 @@ parser.add_argument('-f', '--found', nargs='?', default='', help='指定した�
 parser.add_argument('-r', '--run', action='store_true', help='コンパイルして実行')
 parser.add_argument('-w', '--wave', action='store_true', help='GtkWaveを使って波形の表示')
 parser.add_argument('-c', '--clean', action='store_true', help='生成したテストベンチを削除')
-parser.add_argument('-v', '--version', action='version', version='test_bench 0.2')
+parser.add_argument('-v', '--version', action='version', version='test_bench 0.3')
 args = parser.parse_args()
 
 if args.found:
