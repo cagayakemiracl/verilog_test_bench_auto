@@ -1,7 +1,6 @@
 import os.path
 import os
 import re
-import math
 import filecmp
 import sys
 from functools import reduce
@@ -86,7 +85,7 @@ def spl_val(line, lis):
     attr = my_split(",|;|\s", tmp)
     if re.match("^\[", attr[0]):
         bit_list =  [int(x) for x in my_split("\[|:|\]", attr[0])]
-        bit_num = 2 ** (int(math.fabs(bit_list[0] - bit_list[1])) + 1)
+        bit_num = 2 ** (abs(bit_list[0] - bit_list[1]) + 1)
         attr.pop(0)
     else:
         bit_num = 2
