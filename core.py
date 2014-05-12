@@ -80,20 +80,21 @@ def check_veri(string):
 def not_found_module(module):
     print_error ("指定したモジュールが見つかりませんでした! %s" % module)
 
-def found_module(module, file_list):
-    for file in file_list:
-        if not os.path.exists(file):
-            print_error("ファイルが存在しません! %s" % file)
-
-        check_veri(file)
-        with open(file, 'r') as f:
-            for line in f:
-                if is_eq_module(line, module):
-                    return file
-
-    not_found_module(module)
-
 class TestBench:
+    @classmethod
+    def found_module(cls, module, file_list):
+        for file in file_list:
+            if not os.path.exists(file):
+                print_error("ファイルが存在しません! %s" % file)
+
+            check_veri(file)
+            with open(file, 'r') as f:
+                for line in f:
+                    if is_eq_module(line, module):
+                        return file
+
+        not_found_module(module)
+
     def __init__(self, file_list=[], input='', output='', topmodule='', path=''):
         for file in file_list:
             check_veri(file)

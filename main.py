@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-from core import TestBench, found_module
+from core import TestBench
 import argparse
 import sys
 
@@ -21,7 +21,7 @@ parser.add_argument('-v', '--version', action='version', version='test_bench 0.3
 args = parser.parse_args()
 
 if args.found:
-    print ('%sは%sの中にあります' % (args.found, found_module(args.found, args.file_list)))
+    print ('%sは%sの中にあります' % (args.found, TestBench.found_module(args.found, args.file_list)))
     sys.exit(0)
 
 test_bench = TestBench(args.file_list, args.input, args.output, args.topmodule, args.path)
