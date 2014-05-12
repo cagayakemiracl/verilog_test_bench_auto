@@ -20,6 +20,3 @@ $ sudo ln -sf verilog_test_bench_auto/test_bench /usr/bin/test_bench
 
 必要なもの
 python 3.x
-(python 2.x)
-
-学校のパソコンにはpython 2.7しか入ってないのでpython 2.7向けのコードも入ってます

@@ -93,7 +93,7 @@ def found_module(module, file_list):
 
     not_found_module(module)
 
-class Test_bench:
+class TestBench:
     def __init__(self, file_list=[], input='', output='', topmodule='', path=''):
         for file in file_list:
             check_veri(file)

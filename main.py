@@ -1,7 +1,7 @@
-#!/usr/bin/env python2.7
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-from test_bench_core2 import Test_bench, found_module
+from core import TestBench, found_module
 import argparse
 import sys
 
@@ -24,7 +24,7 @@ if args.found:
     print ('%sは%sの中にあります' % (args.found, found_module(args.found, args.file_list)))
     sys.exit(0)
 
-test_bench = Test_bench(args.file_list, args.input, args.output, args.topmodule, args.path)
+test_bench = TestBench(args.file_list, args.input, args.output, args.topmodule, args.path)
 if args.run:
     test_bench.run()
 
