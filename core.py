@@ -79,19 +79,6 @@ def check_veri(string):
 def not_found_module(module):
     print_error ("指定したモジュールが見つかりませんでした! %s" % module)
 
-def spl_val(line, lis):
-    lis.append(port2obj(line))
-    tmp = rm_type(line)
-    attr = my_split(",|;|\s", tmp)
-    if re.match("^\[", attr[0]):
-        bit_list =  [int(x) for x in my_split("\[|:|\]", attr[0])]
-        bit_num = 2 ** (abs(bit_list[0] - bit_list[1]) + 1)
-        attr.pop(0)
-    else:
-        bit_num = 2
-
-    return attr, bit_num, lis
-
 class TestBench:
     @classmethod
     def found_module(cls, module, file_list):
@@ -125,7 +112,7 @@ class TestBench:
         if topmodule:
             self.module = topmodule
             if not input:
-                self.source_file = TestBench.found_module(self.module, file_list)
+                self.source_file = self.found_module(self.module, file_list)
 
         else:
             basename = os.path.basename(self.source_file)
@@ -171,11 +158,11 @@ class TestBench:
         with open(self.source_file, 'r') as f:
             for line in f:
                 if "input" in line and target:
-                    attr, bit_num, self.objl = spl_val(line, self.objl)
+                    attr, bit_num = self._spl_val(line)
                     self.bit_sum *= bit_num ** len(attr)
                     self.inputl.append([bit_num, attr])
                 elif "output" in line and target:
-                    attr, bit_num, self.objl = spl_val(line, self.objl)
+                    attr, bit_num = self._spl_val(line)
                     self.outputl.append([bit_num, attr])
                 elif "endmodule" in line and target:
                     break
@@ -263,3 +250,17 @@ endmodule // test_bench
         rm_aout()
         my_remove(self.dest_file)
         my_remove(self.dump_file)
+
+
+    def _spl_val(self, line):
+        self.objl.append(port2obj(line))
+        tmp = rm_type(line)
+        attr = my_split(",|;|\s", tmp)
+        if re.match("^\[", attr[0]):
+            bit_list =  [int(x) for x in my_split("\[|:|\]", attr[0])]
+            bit_num = 2 ** (abs(bit_list[0] - bit_list[1]) + 1)
+            attr.pop(0)
+        else:
+            bit_num = 2
+
+        return attr, bit_num
