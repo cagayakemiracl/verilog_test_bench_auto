@@ -85,7 +85,7 @@ def spl_val(line, lis):
     tmp = rm_type(line)
     attr = my_split(",|;|\s", tmp)
     if re.match("^\[", attr[0]):
-        bit_list = list(map(int, my_split("\[|:|\]", attr[0])))
+        bit_list =  [int(x) for x in my_split("\[|:|\]", attr[0])]
         bit_num = 2 ** (int(math.fabs(bit_list[0] - bit_list[1])) + 1)
         attr.pop(0)
     else:
@@ -108,7 +108,7 @@ class TestBench:
 
         not_found_module(module)
 
-    def __init__(self, file_list=[], input='', output='', topmodule='', path=''):
+    def __init__(self, file_list, input='', output='', topmodule='', path=''):
         for file in file_list:
             check_veri(file)
 
@@ -126,7 +126,7 @@ class TestBench:
         if topmodule:
             self.module = topmodule
             if not input:
-                self.source_file = found_module(self.module, file_list)
+                self.source_file = TestBench.found_module(self.module, file_list)
 
         else:
             basename = os.path.basename(self.source_file)
