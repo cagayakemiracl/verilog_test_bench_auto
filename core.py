@@ -79,9 +79,13 @@ def check_veri(string):
 def not_found_module(module):
     print_error ("指定したモジュールが見つかりませんでした! %s" % module)
 
+def cat_file(file):
+    with open(file, 'r') as f:
+        print(f.read())
+
 class TestBench:
     @classmethod
-    def found_module(cls, module, file_list):
+    def found_module(self, module, file_list):
         for file in file_list:
             if not os.path.exists(file):
                 print_error("ファイルが存在しません! %s" % file)
@@ -251,6 +255,10 @@ endmodule // test_bench
         my_remove(self.dest_file)
         my_remove(self.dump_file)
 
+
+    def cat_test(self):
+        cat_file(self.source_file)
+        cat_file(self.dest_file)
 
     def _spl_val(self, line):
         self.objl.append(port2obj(line))
