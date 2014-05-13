@@ -189,6 +189,7 @@ class TestBench:
         if "clk" in self.inputl:
             self.clk = "\n\talways #5 clk <= !clk;\n\tinitial clk = 0;\n"
             self.inputl.pop(self.inputl.index("clk"))
+            self.bit_sum /= 2
 
         self.inputs = list2str(self.inputl)
 
@@ -254,7 +255,6 @@ endmodule // test_bench
         rm_aout()
         my_remove(self.dest_file)
         my_remove(self.dump_file)
-
 
     def cat_test(self):
         cat_file(self.source_file)
