@@ -141,6 +141,8 @@ class TestBench:
             self.dest_file = base + ".v"
             self.dump_file = base + ".vcd"
 
+        basename = os.path.basename(self.dest_file)
+        self.test_module, ext = os.path.splitext(basename)
         for file in self.file_list:
             if os.path.exists(self.dest_file) and filecmp.cmp(file, self.dest_file):
                 print_error("入力ファイルと出力ファイルが同じです! %s" % file)
@@ -199,13 +201,13 @@ class TestBench:
 \thttps://github.com/cagayakemiracl/verilog_test_bench_auto
 \tThank you!!
 */
-module test_bench ();
+module %s ();
 %s
 \t%s i0 (%s);
 %s
 \tinitial begin
 \t\t$dumpfile ("%s");
-\t\t$dumpvars (0, test_bench);
+\t\t$dumpvars (0, %s);
 \t\t$monitor  ("%%t%s", $time, %s);
 %s
 \t\trepeat (%d) begin
@@ -215,11 +217,13 @@ module test_bench ();
 \t\t$finish;
 \tend // initial begin
 endmodule // test_bench
-''' % (add_list(["\t%s\n" % x for x in self.objl]),
+''' % (self.test_module,
+       add_list(["\t%s\n" % x for x in self.objl]),
        self.module,
        list2str([".%s(%s)" % (x, x) for x in self.argl]),
        self.clk,
        self.dump_file,
+       self.test_module,
        add_list([" %s = %%b" % x for x in self.argl]),
        self.args,
        add_list(["\t\t%s = 0;\n" % x for x in self.inputl]),
@@ -229,9 +233,10 @@ endmodule // test_bench
        self.bit_sum))
 
     def compile_file(self):
-        os.system("%s -s test_bench %s%s" % (self.iverilog,
-                                             self.dest_file,
-                                             add_list([" %s" % x for x in self.file_list])))
+        os.system("%s -Wall -s %s %s%s" % (self.iverilog,
+                                           self.test_module,
+                                           self.dest_file,
+                                           add_list([" %s" % x for x in self.file_list])))
 
     def exec_file(self):
         if not os.path.exists("a.out"):
