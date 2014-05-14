@@ -186,12 +186,11 @@ class TestBench:
         self.outputl = sort_bit(self.outputl)
         self.argl = self.outputl + self.inputl
         self.args = list2str(self.argl)
-        if "clk" in self.inputl:
-            self.clk = "\n\talways #5 clk <= !clk;\n\tinitial clk = 0;\n"
-            self.inputl.pop(self.inputl.index("clk"))
-            self.bit_sum /= 2
-
         self.inputs = list2str(self.inputl)
+        if "clk" in self.inputl:
+            self.clk = "\n\talways #5 clk <= !clk;\n"
+            self.bit_sum /= 2
+            self.inputs = self.inputs.replace(", clk", "").strip()
 
     def output_file(self):
         with open(self.dest_file, 'w') as f:
@@ -201,9 +200,9 @@ class TestBench:
 \tThank you!!
 */
 module test_bench ();
-%s%s
+%s
 \t%s i0 (%s);
-
+%s
 \tinitial begin
 \t\t$dumpfile ("%s");
 \t\t$dumpvars (0, test_bench);
@@ -217,9 +216,9 @@ module test_bench ();
 \tend // initial begin
 endmodule // test_bench
 ''' % (add_list(["\t%s\n" % x for x in self.objl]),
-       self.clk,
        self.module,
        list2str([".%s(%s)" % (x, x) for x in self.argl]),
+       self.clk,
        self.dump_file,
        add_list([" %s = %%b" % x for x in self.argl]),
        self.args,
