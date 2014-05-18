@@ -30,7 +30,11 @@ def get_type(line):
 def rm_type(line):
     line = line.strip()
     type = get_type(line)
-    return line.replace(type, "").strip()
+    line = line.replace(type, "").strip()
+    if "reg" in line:
+        line = line.replace("reg", "").strip()
+
+    return line
 
 def add_list(list):
     return reduce(lambda x, y: x + y, list);
@@ -41,7 +45,9 @@ def port2obj(line):
     "output" : "wire "
     }
     port = get_type(line)
-    port_rm = line.replace(port, "").strip()
+    port_rm = rm_type(line)
+    port_rm = port_rm.rstrip(';').rstrip(',')
+    port_rm += ';'
     return dic.get(port, "") + port_rm
 
 def sort_bit(list):
