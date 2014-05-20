@@ -19,6 +19,7 @@ parser.add_argument('-r', '--run', action='store_true', help='コンパイルし
 parser.add_argument('-w', '--wave', action='store_true', help='GtkWaveを使って波形の表示')
 parser.add_argument('-c', '--clean', action='store_true', help='生成したテストベンチを削除')
 parser.add_argument('-l', '--less', action='store_true', help='生成したファイルを表示')
+parser.add_argument('--force', action='store_true', help='上書きの確認無視')
 parser.add_argument('-v', '--version', action='version', version='test_bench 0.3')
 args = parser.parse_args()
 
@@ -26,7 +27,7 @@ if args.found:
     print ('%sは%sの中にあります' % (args.found, TestBench.found_module(args.found, args.file_list)))
     sys.exit(0)
 
-test_bench = TestBench(args.file_list, args.input, args.output, args.topmodule, args.path, int(args.time[0]))
+test_bench = TestBench(args.file_list, args.input, args.output, args.topmodule, args.path, int(args.time[0]), args.force)
 if args.run:
     test_bench.run()
 
