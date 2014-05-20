@@ -269,7 +269,9 @@ endmodule // test_bench
         my_remove(self.dump_file)
 
     def cat_test(self):
-        cat_file(self.source_file)
+        for file in self.file_list:
+            cat_file(file)
+
         cat_file(self.dest_file)
 
     def _spl_val(self, line):
