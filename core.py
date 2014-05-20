@@ -216,7 +216,7 @@ module %s ();
 \t\t$dumpfile ("%s");
 \t\t$dumpvars (0, %s);
 \t\t$monitor  ("%%t%s", $time, %s);
-%s
+\t\t%s
 \t\trepeat (%d) begin
 \t\t\t#%d;
 \t\t\t{%s} = {%s} + 1;
@@ -233,7 +233,7 @@ endmodule // test_bench
        self.test_module,
        add_list([" %s = %%b" % x for x in self.argl]),
        self.args,
-       add_list(["\t\t%s = 0;\n" % x for x in self.inputl]),
+       "{%s} = 0;\n" % list2str(self.inputl),
        self.bit_sum,
        self.time * 10,
        self.inputs,
