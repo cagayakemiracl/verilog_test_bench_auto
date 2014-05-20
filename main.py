@@ -14,6 +14,7 @@ parser.add_argument('-i', '--input', nargs='?', default='', help='テストベ�
 parser.add_argument('-o', '--output', nargs='?', default='', help='テストベンチファイル名又はディレクトリ')
 parser.add_argument('-p', '--path', nargs='?', default='', help='iverilogなどのツールがあるディレクトリ')
 parser.add_argument('-f', '--found', nargs='?', default='', help='指定したモジュールが含まれるファイルを検索')
+parser.add_argument('-t', '--time', nargs=1, default='1', help='一つの入力で待つ回数')
 parser.add_argument('-r', '--run', action='store_true', help='コンパイルして実行')
 parser.add_argument('-w', '--wave', action='store_true', help='GtkWaveを使って波形の表示')
 parser.add_argument('-c', '--clean', action='store_true', help='生成したテストベンチを削除')
@@ -25,7 +26,7 @@ if args.found:
     print ('%sは%sの中にあります' % (args.found, TestBench.found_module(args.found, args.file_list)))
     sys.exit(0)
 
-test_bench = TestBench(args.file_list, args.input, args.output, args.topmodule, args.path)
+test_bench = TestBench(args.file_list, args.input, args.output, args.topmodule, args.path, int(args.time[0]))
 if args.run:
     test_bench.run()
 

@@ -104,7 +104,7 @@ class TestBench:
 
         not_found_module(module)
 
-    def __init__(self, file_list, input='', output='', topmodule='', path=''):
+    def __init__(self, file_list, input='', output='', topmodule='', path='', time=0):
         for file in file_list:
             check_veri(file)
 
@@ -162,6 +162,7 @@ class TestBench:
         self.outputl = []
         self.objl = []
         self.clk = ""
+        self.time = time
         self.analysis()
         self.output_file()
 
@@ -217,7 +218,7 @@ module %s ();
 \t\t$monitor  ("%%t%s", $time, %s);
 %s
 \t\trepeat (%d) begin
-\t\t\t#10;
+\t\t\t#%d;
 \t\t\t{%s} = {%s} + 1;
 \t\tend // repeat (%d) begin
 \t\t$finish;
@@ -234,6 +235,7 @@ endmodule // test_bench
        self.args,
        add_list(["\t\t%s = 0;\n" % x for x in self.inputl]),
        self.bit_sum,
+       self.time * 10,
        self.inputs,
        self.inputs,
        self.bit_sum))
