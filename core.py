@@ -31,8 +31,12 @@ def rm_type(line):
     line = line.strip()
     type = get_type(line)
     line = line.replace(type, "").strip()
-    if "reg" in line:
-        line = line.replace("reg", "").strip()
+    line_spl = my_split("\s", line)
+    try:
+        if line_spl[0] == "reg":
+            line = line.replace("reg", "").strip()
+    except IndexError:
+        pass
 
     return line
 
